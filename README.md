@@ -15,7 +15,7 @@ $ npm i web3-cardano-token
 Using [Nami Wallet](https://namiwallet.io/) extension:
 
 ```js
-import Web3Token from 'web3-cardano-token';
+import Web3Token from 'web3-cardano-token/browser';
 
 // Connection to Nami wallet
 const cardano = window.cardano;
@@ -33,7 +33,7 @@ const token = await Web3Token.sign(msg => cardano.signData(your_address, toHex(m
 
 ## Example usage (Server side)
 ```js
-const Web3Token = require('web3-cardano-token');
+const Web3Token = require('web3-cardano-token/node');
 
 // getting token from authorization header ... for example
 const token = req.headers['Authorization']
@@ -50,7 +50,7 @@ req.user = await User.findOne({ address });
 
 Argument | Name | Description | Required | Example
 --- | --- | --- | --- | ---
-1 | `signer` | A function that returns a promise with signature string eg: namiWallet.signData(`address`, `data`) | `required` | `(body) => namiWallet.signData(addr1e2..0c, body)`
+1 | `signer` | A function that returns a promise with signature string eg: await namiWallet.signData(`address`, `data`) | `required` | `(body) => await namiWallet.signData(addr1e2..0c, body)`
 2 | `expire_in` | A string that represents a time span ([see ms module](https://github.com/vercel/ms)) or a number of milliseconds | `optional` (default: `1d`) | `1 day`
 3 | `body` | An object that will be appended to a signature's body. Can only contain string values. Can be used for some custom data. | `optional` | `{ 'Custom-data': 'some custom data' }`
 

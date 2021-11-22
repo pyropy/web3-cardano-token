@@ -1,15 +1,13 @@
 {
   "name": "web3-cardano-token",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": false,
   "description": "Web3 Token is a new way to authenticate users in hybrid dApps using signed messages.",
   "author": "pyropy",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "webpack --mode=production",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "build": "webpack --mode=production --progress"
   },
+  "module": "src/lib.js",
   "main": "dist/web3-cardano-token.js",
   "dependencies": {
     "@emurgo/cardano-serialization-lib-browser": "^9.1.2",
@@ -24,54 +22,14 @@
     "to-hex": "0.0.17"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-unit-jest": "^4.5.13",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/test-utils": "^1.0.3",
-    "babel-eslint": "^10.1.0",
+    "clean-webpack-plugin": "^4.0.0",
     "core-js": "^3.6.5",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "ethers": "^5.4.7",
-    "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11",
+    "jest": "^27.3.1",
     "webpack": "^5.64.2",
-    "webpack-cli": "^4.9.1"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {},
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      },
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
+    "webpack-cli": "^4.9.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "browserslist": [
     "> 1%",
