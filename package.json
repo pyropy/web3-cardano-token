@@ -1,6 +1,6 @@
 {
   "name": "web3-cardano-token",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "description": "Web3 Token is a new way to authenticate users in hybrid dApps using signed messages.",
   "author": "pyropy",
@@ -11,6 +11,9 @@
     "lint": "vue-cli-service lint"
   },
   "main": "dist/web3-cardano-token.common.js",
+  "module": "dist/web3-cardano-token.esm.js",
+  "unkpg": "dist/web3-cardano-token.min.js",
+
   "dependencies": {
     "base-64": "^1.0.0",
     "buffer": "^6.0.3",

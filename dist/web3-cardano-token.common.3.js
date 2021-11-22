@@ -171,29 +171,22 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 /***/ (function(module, exports, __webpack_require__) {
 
 var $ = __webpack_require__("23e7");
-var uncurryThis = __webpack_require__("e330");
 var toIndexedObject = __webpack_require__("fc6a");
-var toObject = __webpack_require__("7b0b");
-var toString = __webpack_require__("577e");
-var lengthOfArrayLike = __webpack_require__("07fa");
-
-var push = uncurryThis([].push);
-var join = uncurryThis([].join);
+var toLength = __webpack_require__("50c4");
 
 // `String.raw` method
 // https://tc39.es/ecma262/#sec-string.raw
 $({ target: 'String', stat: true }, {
   raw: function raw(template) {
-    var rawTemplate = toIndexedObject(toObject(template).raw);
-    var literalSegments = lengthOfArrayLike(rawTemplate);
+    var rawTemplate = toIndexedObject(template.raw);
+    var literalSegments = toLength(rawTemplate.length);
     var argumentsLength = arguments.length;
     var elements = [];
     var i = 0;
     while (literalSegments > i) {
-      push(elements, toString(rawTemplate[i++]));
-      if (i === literalSegments) return join(elements, '');
-      if (i < argumentsLength) push(elements, toString(arguments[i]));
-    }
+      elements.push(String(rawTemplate[i++]));
+      if (i < argumentsLength) elements.push(String(arguments[i]));
+    } return elements.join('');
   }
 });
 
@@ -533,8 +526,6 @@ __webpack_require__("d3b7");
 
 __webpack_require__("5cc6");
 
-__webpack_require__("907a");
-
 __webpack_require__("9a8c");
 
 __webpack_require__("a975");
@@ -592,8 +583,6 @@ __webpack_require__("e01a");
 __webpack_require__("b0c0");
 
 __webpack_require__("ac1f");
-
-__webpack_require__("e9c4");
 
 __webpack_require__("99af");
 
