@@ -39,6 +39,7 @@ const nodeConfig = {
   externals: [nodeExternals()],
   output: {
     path: path.resolve(__dirname, "./dist"),
+    publicPath: '',
     filename: "node.js",
     libraryTarget: "umd",
     libraryExport: "default",
@@ -50,6 +51,7 @@ const browserConfig = {
   target: "web",
   output: {
     path: path.resolve(__dirname, "./dist"),
+    publicPath: '',
     filename: "browser.js",
     libraryTarget: "umd",
     globalObject: "this",

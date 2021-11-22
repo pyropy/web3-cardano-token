@@ -15,7 +15,7 @@ $ npm i web3-cardano-token
 Using [Nami Wallet](https://namiwallet.io/) extension:
 
 ```js
-import Web3Token from 'web3-cardano-token/browser';
+import Web3Token from 'web3-cardano-token/dist/browser';
 
 // Connection to Nami wallet
 const cardano = window.cardano;
@@ -33,7 +33,7 @@ const token = await Web3Token.sign(msg => cardano.signData(your_address, toHex(m
 
 ## Example usage (Server side)
 ```js
-const Web3Token = require('web3-cardano-token/node');
+const Web3Token = require('web3-cardano-token/dist/node');
 
 // getting token from authorization header ... for example
 const token = req.headers['Authorization']
