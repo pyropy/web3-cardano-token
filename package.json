@@ -1,16 +1,16 @@
 {
   "name": "web3-cardano-token",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": false,
   "description": "Web3 Token is a new way to authenticate users in hybrid dApps using signed messages.",
   "author": "pyropy",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib src/lib.js",
+    "build": "webpack --mode=production",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
-  "main": "dist/web3-cardano-token.common.js",
+  "main": "dist/web3-cardano-token.js",
   "dependencies": {
     "@emurgo/cardano-serialization-lib-browser": "^9.1.2",
     "@emurgo/cardano-serialization-lib-nodejs": "^9.1.2",
@@ -35,7 +35,9 @@
     "eslint-plugin-vue": "^6.2.2",
     "ethers": "^5.4.7",
     "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^5.64.2",
+    "webpack-cli": "^4.9.1"
   },
   "eslintConfig": {
     "root": true,
