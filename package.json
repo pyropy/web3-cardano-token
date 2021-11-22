@@ -10,7 +10,7 @@
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
-  "main": "dist/web3-token.common.js",
+  "main": "dist/web3-cardano-token.common.js",
   "dependencies": {
     "base-64": "^1.0.0",
     "buffer": "^6.0.3",
