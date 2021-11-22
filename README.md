@@ -2,6 +2,7 @@
 
 Web3 Cardano Token is a new way to authenticate users. A replacement for JWT in hybrid dApps.
 ---
+
 ## Install
 
 ```bash
@@ -11,7 +12,7 @@ $ npm i web3-cardano-token
 
 ## Example usage (Client side)
 
-Using [NamiWallet](https://namiwallet.io/) package:
+Using [Nami Wallet](https://namiwallet.io/) extension:
 
 ```js
 import Web3Token from 'web3-cardano-token';
@@ -54,6 +55,10 @@ Argument | Name | Description | Required | Example
 3 | `body` | An object that will be appended to a signature's body. Can only contain string values. Can be used for some custom data. | `optional` | `{ 'Custom-data': 'some custom data' }`
 
 ---
-
 ## License
 Web3 Cardano Token is released under the MIT license. © 2021 Srdjan Stankovic
+
+
+## Note:
+
+This package is based upon [web3-token](https://github.com/bytesbay/web3-token) package and uses the same API.
