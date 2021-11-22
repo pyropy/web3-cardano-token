@@ -1,6 +1,6 @@
-((typeof self !== 'undefined' ? self : this)["webpackJsonpweb3_cardano_token"] = (typeof self !== 'undefined' ? self : this)["webpackJsonpweb3_cardano_token"] || []).push([[5],{
+((typeof self !== 'undefined' ? self : this)["webpackJsonpweb3_cardano_token"] = (typeof self !== 'undefined' ? self : this)["webpackJsonpweb3_cardano_token"] || []).push([[6],{
 
-/***/ "b7e7":
+/***/ "a355":
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -11,9 +11,9 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = "b7e7";
+webpackEmptyContext.id = "a355";
 
 /***/ })
 
 }]);
-//# sourceMappingURL=web3-cardano-token.umd.5.js.map
+//# sourceMappingURL=web3-cardano-token.common.6.js.map

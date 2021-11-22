@@ -9,22 +9,22 @@ class Loader {
      * @private
      */
 
-    const isBrowser = typeof window !== "undefined";
+    this.isBrowser = typeof window !== "undefined";
 
-    this._wasm = isBrowser
+    this._wasm = this.isBrowser
       ? await import(
-          "../../temporary_modules/@emurgo/cardano-serialization-lib-browser"
+          "@emurgo/cardano-serialization-lib-browser"
         )
       : await import(
-          "../../temporary_modules/@emurgo/cardano-serialization-lib-nodejs"
+          "@emurgo/cardano-serialization-lib-nodejs"
         );
 
-    this._wasm2 = isBrowser
+    this._wasm2 = this.isBrowser
       ? await import(
-          "../../temporary_modules/@emurgo/cardano-message-signing-browser"
+          "emurgo-message-signing"
         )
       : await import(
-          "../../temporary_modules/@emurgo/cardano-message-signing-nodejs"
+          "emurgo-message-signing-nodejs"
         );
   }
 

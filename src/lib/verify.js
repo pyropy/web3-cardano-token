@@ -52,5 +52,5 @@ export const verify = async (token) => {
     throw new Error("Token expired");
   }
 
-  return { address: address, body: parsed_body };
+  return { address: address.to_bech32(), body: parsed_body };
 };

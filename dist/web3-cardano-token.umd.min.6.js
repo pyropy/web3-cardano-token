@@ -1,0 +1,2 @@
+(("undefined"!==typeof self?self:this)["webpackJsonpweb3_cardano_token"]=("undefined"!==typeof self?self:this)["webpackJsonpweb3_cardano_token"]||[]).push([[6],{a355:function(e,n){function o(e){var n=new Error("Cannot find module '"+e+"'");throw n.code="MODULE_NOT_FOUND",n}o.keys=function(){return[]},o.resolve=o,e.exports=o,o.id="a355"}}]);
+//# sourceMappingURL=web3-cardano-token.umd.min.6.js.map
