@@ -9,7 +9,7 @@ class Loader {
      * @private
      */
 
-    const isBrowser = window !== undefined;
+    const isBrowser = typeof window !== "undefined";
 
     this._wasm = isBrowser
       ? await import(

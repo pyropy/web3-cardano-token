@@ -8070,7 +8070,7 @@ var loader_Loader = /*#__PURE__*/function () {
                 /**
                  * @private
                  */
-                isBrowser = window !== undefined;
+                isBrowser = typeof window !== "undefined";
 
                 if (!isBrowser) {
                   _context.next = 9;
