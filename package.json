@@ -1,6 +1,6 @@
 {
   "name": "web3-cardano-token",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": false,
   "description": "Web3 Token is a new way to authenticate users in hybrid dApps using signed messages.",
   "author": "pyropy",

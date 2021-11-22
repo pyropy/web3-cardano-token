@@ -14,6 +14,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
+    publicPath: '',
     filename: "web3-cardano-token.js",
     globalObject: "this",
     library: {
