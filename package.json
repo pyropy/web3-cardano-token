@@ -7,6 +7,7 @@
   "scripts": {
     "build": "webpack --mode=production --progress"
   },
+  "types": "src/lib.d.ts",
   "module": "src/lib.js",
   "main": "dist/web3-cardano-token.js",
   "dependencies": {

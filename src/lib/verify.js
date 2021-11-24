@@ -1,7 +1,7 @@
 import Base64 from "base-64";
 import parseAsHeaders from "parse-headers";
 import { Buffer } from "buffer";
-import Loader from "./loader";
+import Loader from "./loader.js";
 /**
  *
  * @param {string} token Signed Web3 Token
@@ -63,31 +63,37 @@ export const verify = async (token) => {
     throw new Error("Token expired");
   }
 
-  return { address: address.to_bech32(), body: parsed_body };
+  return {
+    address: address.to_bech32(),
+    network: address.network_id(),
+    body: parsed_body,
+  };
 };
 
-const verifyAddress = (address, publicKey) => {
-  const checkAddress = Address.from_bech32(address);
-
+const verifyAddress = (checkAddress, publicKey) => {
+  console.log("publicKey", publicKey.hash());
   // if (this.headers.address.to_bech32() !== checkAddress.to_bech32()) {
   //   console.log("FASLE1");
   //   return false;
   // }
   // check if BaseAddress
   try {
-    const baseAddress = BaseAddress.from_address(address);
+    const baseAddress = Loader.Cardano.BaseAddress.from_address(checkAddress);
     //reconstruct address
     const paymentKeyHash = publicKey.hash();
     const stakeKeyHash = baseAddress.stake_cred().to_keyhash();
-    const reconstructedAddress = BaseAddress.new(
+    const reconstructedAddress = Loader.Cardano.BaseAddress.new(
       checkAddress.network_id(),
-      StakeCredential.from_keyhash(paymentKeyHash),
-      StakeCredential.from_keyhash(stakeKeyHash)
+      Loader.Cardano.StakeCredential.from_keyhash(paymentKeyHash),
+      Loader.Cardano.StakeCredential.from_keyhash(stakeKeyHash)
     );
+
     return (
       checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32()
     );
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 
   try {
     const stakeKeyHash = address.hash();
