@@ -2,7 +2,11 @@ import Base64 from "base-64";
 import parseAsHeaders from "parse-headers";
 import { Buffer } from "buffer";
 import Loader from "./loader";
-
+/**
+ *
+ * @param {string} token Signed Web3 Token
+ * @returns {boolean}
+ */
 export const verify = async (token) => {
   if (!token || !token.length) {
     throw new Error("Token required.");
@@ -43,6 +47,13 @@ export const verify = async (token) => {
   const address = Loader.Cardano.Address.from_bytes(
     headermap.header(Loader.Message.Label.new_text("address")).as_bytes()
   );
+
+  const publicKey = Loader.Cardano.PublicKey.from_bytes(headermap.key_id());
+
+  if (!verifyAddress(address, publicKey)) {
+    throw new Error("Address verification failed");
+  }
+
   const parsed_body = parseAsHeaders(body);
 
   if (
@@ -53,4 +64,40 @@ export const verify = async (token) => {
   }
 
   return { address: address.to_bech32(), body: parsed_body };
+};
+
+const verifyAddress = (address, publicKey) => {
+  const checkAddress = Address.from_bech32(address);
+
+  // if (this.headers.address.to_bech32() !== checkAddress.to_bech32()) {
+  //   console.log("FASLE1");
+  //   return false;
+  // }
+  // check if BaseAddress
+  try {
+    const baseAddress = BaseAddress.from_address(address);
+    //reconstruct address
+    const paymentKeyHash = publicKey.hash();
+    const stakeKeyHash = baseAddress.stake_cred().to_keyhash();
+    const reconstructedAddress = BaseAddress.new(
+      checkAddress.network_id(),
+      StakeCredential.from_keyhash(paymentKeyHash),
+      StakeCredential.from_keyhash(stakeKeyHash)
+    );
+    return (
+      checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32()
+    );
+  } catch (e) {}
+
+  try {
+    const stakeKeyHash = address.hash();
+    const reconstructedAddress = RewardAddress.new(
+      checkAddress.network_id(),
+      StakeCredential.from_keyhash(stakeKeyHash)
+    );
+    return (
+      checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32()
+    );
+  } catch (e) {}
+  return false;
 };
