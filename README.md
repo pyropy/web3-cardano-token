@@ -18,8 +18,8 @@ Using [Nami Wallet](https://namiwallet.io/) extension:
 import Web3Token from 'web3-cardano-token/dist/browser';
 
 // Connection to Nami wallet
-const cardano = window.cardano;
-await cardano.enable();
+const { cardano } = window.cardano;
+await cardano.nami.enable();
 
 // getting address from which we will sign message
 const address = (await cardano.getUsedAddresses())[0];

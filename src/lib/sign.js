@@ -2,7 +2,7 @@ import Base64 from 'base-64';
 import { timeSpan } from './timespan';
 
 /**
- * 
+ *
  * @param {function} signer - The signer function, must return Promise<string>
  * @param {any} body - Body to add to the sign
  */
@@ -19,9 +19,9 @@ export const sign = async (signer, expires_in = '1d', body = {}) => {
   };
 
   const msg = buildMessage(data);
-  
+
   if(typeof signer === 'function') {
-    var signature = await signer(msg);
+    var { signature } = await signer(msg);
   } else {
     throw new Error('"signer" argument should be a function that returns a signature eg: "msg => web3.eth.personal.sign(msg, <YOUR_ADDRESS>)"')
   }
