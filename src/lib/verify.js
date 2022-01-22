@@ -50,8 +50,9 @@ export const verify = async (token) => {
 
   const publicKey = Loader.Cardano.PublicKey.from_bytes(headermap.key_id());
 
-  if (!verifyAddress(address, publicKey)) {
-    throw new Error("Address verification failed");
+  const verifyAddressResponse = verifyAddress(address, publicKey);
+  if (!verifyAddressResponse.status) {
+    throw new Error(verifyAddressResponse.msg);
   }
 
   const parsed_body = parseAsHeaders(body);
@@ -70,13 +71,16 @@ export const verify = async (token) => {
   };
 };
 
+/**
+ * Validate the Address provided. To do this we take the Address (or Base Address)
+ * and compare it to an address (BaseAddress or RewardAddress) reconstructed from the
+ * publicKey.
+ * @param {Loader.Cardano.Address} checkAddress 
+ * @param {Loader.Cardano.PublicKey} publicKey 
+ * @returns {{status: bool, msg?: string, code?: number}}
+ */
 const verifyAddress = (checkAddress, publicKey) => {
-  console.log("publicKey", publicKey.hash());
-  // if (this.headers.address.to_bech32() !== checkAddress.to_bech32()) {
-  //   console.log("FASLE1");
-  //   return false;
-  // }
-  // check if BaseAddress
+  let errorMsg = "";
   try {
     const baseAddress = Loader.Cardano.BaseAddress.from_address(checkAddress);
     //reconstruct address
@@ -88,22 +92,37 @@ const verifyAddress = (checkAddress, publicKey) => {
       Loader.Cardano.StakeCredential.from_keyhash(stakeKeyHash)
     );
 
-    return (
-      checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32()
-    );
+    const status = checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32();
+    return {
+      status,
+      msg: status ? "Valid Address" : "Base Address does not validate to Reconstructed address",
+      code: 1
+    };
   } catch (e) {
-    console.error(e);
+    errorMsg += ` ${e.message}`
   }
 
   try {
-    const stakeKeyHash = address.hash();
+    const stakeKeyHash = checkAddress.hash();
     const reconstructedAddress = RewardAddress.new(
       checkAddress.network_id(),
       StakeCredential.from_keyhash(stakeKeyHash)
     );
-    return (
-      checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32()
-    );
-  } catch (e) {}
-  return false;
+    
+    const status = checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32();
+    return {
+      status,
+      msg: status ? "Valid Address" : "Address does not validate to Reconstructed address",
+      code: 1
+    };
+
+  } catch (e) {
+    errorMsg += ` ${e.message}`
+  }
+
+  return {
+    status: false,
+    msg: `Error: ${errorMsg}`,
+    code: 3
+  };
 };
