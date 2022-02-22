@@ -2,12 +2,23 @@ import Base64 from "base-64";
 import parseAsHeaders from "parse-headers";
 import { Buffer } from "buffer";
 import Loader from "./loader.js";
+
+import type {
+  Address,
+  PublicKey,
+} from "@emurgo/cardano-serialization-lib-browser";
+import { COSESign1 } from "./sign.js";
+
+type DataType = {
+  body: string;
+} & COSESign1;
+
 /**
  *
  * @param {string} token Signed Web3 Token
  * @returns {boolean}
  */
-export const verify = async (token) => {
+export const verify = async (token: string) => {
   if (!token || !token.length) {
     throw new Error("Token required.");
   }
@@ -22,30 +33,28 @@ export const verify = async (token) => {
     throw new Error("Token malformed (must be base64 encoded)");
   }
 
+  let msg: DataType;
   try {
-    var { body, signature, key } = JSON.parse(base64_decoded);
+    msg = JSON.parse(base64_decoded);
   } catch (error) {
     throw new Error("Token malformed (unparsable JSON)");
   }
 
-  if (!body || !body.length) {
-    throw new Error("Token malformed (empty message)");
-  }
+  const { signature: signedRaw, key } = msg;
 
-  if (!signature || !signature.length) {
+  if (!signedRaw || !signedRaw.length) {
     throw new Error("Token malformed (empty signature)");
   }
 
   await Loader.load();
 
   const message = Loader.Message.COSESign1.from_bytes(
-    Buffer.from(Buffer.from(signature, "hex"), "hex")
+    Buffer.from(signedRaw, "hex")
   );
-
-  const headermap = message.headers().protected().deserialized_headers();
+  const headers = message.headers().protected().deserialized_headers();
 
   const address = Loader.Cardano.Address.from_bytes(
-    headermap.header(Loader.Message.Label.new_text("address")).as_bytes()
+    headers.header(Loader.Message.Label.new_text("address")).as_bytes()
   );
 
   const coseKey = Loader.Message.COSEKey.from_bytes(Buffer.from(key, "hex"));
@@ -60,6 +69,16 @@ export const verify = async (token) => {
       .as_bytes()
   );
 
+  // const algorithmId = headers.algorithm_id().as_int().as_i32();
+  const signature = Loader.Cardano.Ed25519Signature.from_bytes(
+    message.signature()
+  );
+
+  const data = message.signed_data().to_bytes();
+
+  const body = Buffer.from(data).toString("utf-8");
+
+  // Ensure that the Public Key matches up to the Address in the Signed data.
   const verifyAddressResponse = verifyAddress(address, publicKey);
 
   if (!verifyAddressResponse.verified) {
@@ -68,22 +87,17 @@ export const verify = async (token) => {
     );
   }
 
-  const data = message.signed_data().to_bytes();
-  const body_from_token = Buffer.from(data).toString("utf-8");
-
-  const ed25519Sig = Loader.Cardano.Ed25519Signature.from_bytes(message.signature())
-
-  if (!publicKey.verify(data, ed25519Sig)) {
+  if (!publicKey.verify(data, signature)) {
     throw new Error(
       `Message integrity check failed (has the message been tampered with?)`
     );
   }
 
-  const parsed_body = parseAsHeaders(body_from_token);
+  const parsed_body = parseAsHeaders(body);
 
   if (
     parsed_body["expire-date"] &&
-    new Date(parsed_body["expire-date"]) < new Date()
+    new Date(parsed_body["expire-date"] as string) < new Date()
   ) {
     throw new Error("Token expired");
   }
@@ -95,13 +109,7 @@ export const verify = async (token) => {
   };
 };
 
-/**
- * 
- * @param {Loader.Cardano.Address} checkAddress 
- * @param {Loader.Cardano.PublicKey} publicKey 
- * @returns 
- */
-function verifyAddress(checkAddress, publicKey) {
+function verifyAddress(checkAddress: Address, publicKey: PublicKey) {
   console.log("In Verify Address");
 
   const baseAddress = Loader.Cardano.BaseAddress.from_address(checkAddress);
