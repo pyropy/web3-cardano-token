@@ -21,7 +21,7 @@ export const sign = async (signer, expires_in = '1d', body = {}) => {
   const msg = buildMessage(data);
   
   if(typeof signer === 'function') {
-    var signature = await signer(msg);
+    var COSESign1Message = await signer(msg);
   } else {
     throw new Error('"signer" argument should be a function that returns a signature eg: "msg => web3.eth.personal.sign(msg, <YOUR_ADDRESS>)"')
   }
@@ -30,12 +30,15 @@ export const sign = async (signer, expires_in = '1d', body = {}) => {
     signature = signature.signature
   }
 
+  const {signature, key} = COSESign1Message;
+
   if(typeof signature !== 'string') {
     throw new Error('"signer" argument should be a function that returns a signature string (Promise<string>)')
   }
 
   const token = Base64.encode(JSON.stringify({
     signature,
+    key,
     body: msg,
   }))
 
