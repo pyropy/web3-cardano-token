@@ -96,16 +96,16 @@ export const verify = async (token) => {
 };
 
 /**
- * 
+
+ * Validate the Address provided. To do this we take the Address (or Base Address)
+ * and compare it to an address (BaseAddress or RewardAddress) reconstructed from the
+ * publicKey.
  * @param {Loader.Cardano.Address} checkAddress 
  * @param {Loader.Cardano.PublicKey} publicKey 
- * @returns 
+ * @returns {{status: bool, msg?: string, code?: number}}
  */
-function verifyAddress(checkAddress, publicKey) {
-  console.log("In Verify Address");
-
-  const baseAddress = Loader.Cardano.BaseAddress.from_address(checkAddress);
-
+const verifyAddress = (checkAddress, publicKey) => {
+  let errorMsg = "";
   try {
     //reconstruct address
     const paymentKeyHash = publicKey.hash();
@@ -116,26 +116,37 @@ function verifyAddress(checkAddress, publicKey) {
       Loader.Cardano.StakeCredential.from_keyhash(stakeKeyHash)
     );
 
-    if (
-      checkAddress.to_bech32() !== reconstructedAddress.to_address().to_bech32()
-    ) {
-      return {
-        verified: false,
-        code: 1,
-        message:
-          "Check address does not match Reconstructed Address (Public Key is not the correct key for this Address)",
-      };
-    }
-
+    const status = checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32();
     return {
-      verified: true,
+      status,
+      msg: status ? "Valid Address" : "Base Address does not validate to Reconstructed address",
+      code: 1
     };
-    
   } catch (e) {
-    return {
-      verified: false,
-      code: 3,
-      message: e.message,
-    };
+    errorMsg += ` ${e.message}`
   }
-}
+
+  try {
+    const stakeKeyHash = checkAddress.hash();
+    const reconstructedAddress = RewardAddress.new(
+      checkAddress.network_id(),
+      StakeCredential.from_keyhash(stakeKeyHash)
+    );
+    
+    const status = checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32();
+    return {
+      status,
+      msg: status ? "Valid Address" : "Address does not validate to Reconstructed address",
+      code: 1
+    };
+
+  } catch (e) {
+    errorMsg += ` ${e.message}`
+  }
+
+  return {
+    status: false,
+    msg: `Error: ${errorMsg}`,
+    code: 3
+  };
+};

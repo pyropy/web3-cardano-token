@@ -25,6 +25,10 @@ export const sign = async (signer, expires_in = '1d', body = {}) => {
   } else {
     throw new Error('"signer" argument should be a function that returns a signature eg: "msg => web3.eth.personal.sign(msg, <YOUR_ADDRESS>)"')
   }
+  
+  if (typeof(signature) === "object") {
+    signature = signature.signature
+  }
 
   const {signature, key} = COSESign1Message;
 
