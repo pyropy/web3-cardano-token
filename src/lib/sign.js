@@ -33,7 +33,7 @@ export const sign = async (signer, expires_in = '1d', body = {}) => {
   const {signature, key} = COSESign1Message;
 
   if(typeof signature !== 'string') {
-    throw new Error('"signer" argument should be a function that returns a signature string (Promise<string>)')
+    throw new Error('"signature" argument should be a function that returns a signature string (Promise<string>)')
   }
 
   const token = Base64.encode(JSON.stringify({
