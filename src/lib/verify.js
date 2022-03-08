@@ -128,7 +128,7 @@ const verifyAddress = (checkAddress, publicKey) => {
 
   try {
     const stakeKeyHash = checkAddress.hash();
-    const reconstructedAddress = RewardAddress.new(
+    const reconstructedAddress = Loader.Cardano.RewardAddress.new(
       checkAddress.network_id(),
       StakeCredential.from_keyhash(stakeKeyHash)
     );
