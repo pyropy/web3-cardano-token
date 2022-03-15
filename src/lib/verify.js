@@ -2,6 +2,9 @@ import Base64 from "base-64";
 import parseAsHeaders from "parse-headers";
 import { Buffer } from "buffer";
 import Loader from "./loader.js";
+
+const DEBUG = !!process.env.DEBUG_WEB3;
+
 /**
  *
  * @param {string} token Signed Web3 Token
@@ -42,6 +45,8 @@ export const verify = async (token) => {
     Buffer.from(Buffer.from(signature, "hex"), "hex")
   );
 
+  log('message', message);
+
   const headermap = message.headers().protected().deserialized_headers();
 
   const address = Loader.Cardano.Address.from_bytes(
@@ -60,9 +65,10 @@ export const verify = async (token) => {
       .as_bytes()
   );
 
+  log('publicKey', Buffer.from(publicKey.as_bytes()).toString('hex'));
   const verifyAddressResponse = verifyAddress(address, publicKey);
 
-  if (!verifyAddressResponse.verified) {
+  if (!verifyAddressResponse.status) {
     throw new Error(
       `Address verification failed: (${verifyAddressResponse.message} (${verifyAddressResponse.code}))`
     );
@@ -105,42 +111,33 @@ export const verify = async (token) => {
  * @returns {{status: bool, msg?: string, code?: number}}
  */
 const verifyAddress = (checkAddress, publicKey) => {
+  log('In verifyAddress', checkAddress, publicKey);
   let errorMsg = "";
   try {
     //reconstruct address
+    log('Step verifyAddress', 1);
     const paymentKeyHash = publicKey.hash();
+
+    log('Step verifyAddress', 2);
+    const baseAddress = Loader.Cardano.BaseAddress.from_address(checkAddress);
     const stakeKeyHash = baseAddress.stake_cred().to_keyhash();
+    log('Step verifyAddress', 3);
     const reconstructedAddress = Loader.Cardano.BaseAddress.new(
       checkAddress.network_id(),
       Loader.Cardano.StakeCredential.from_keyhash(paymentKeyHash),
       Loader.Cardano.StakeCredential.from_keyhash(stakeKeyHash)
     );
+    log('Step verifyAddress', 4);
 
     const status = checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32();
+    log('Step verifyAddress', 5, status);
     return {
       status,
       msg: status ? "Valid Address" : "Base Address does not validate to Reconstructed address",
       code: 1
     };
   } catch (e) {
-    errorMsg += ` ${e.message}`
-  }
-
-  try {
-    const stakeKeyHash = checkAddress.hash();
-    const reconstructedAddress = Loader.Cardano.RewardAddress.new(
-      checkAddress.network_id(),
-      StakeCredential.from_keyhash(stakeKeyHash)
-    );
-    
-    const status = checkAddress.to_bech32() === reconstructedAddress.to_address().to_bech32();
-    return {
-      status,
-      msg: status ? "Valid Address" : "Address does not validate to Reconstructed address",
-      code: 1
-    };
-
-  } catch (e) {
+    log('Err verifyAddress', e);
     errorMsg += ` ${e.message}`
   }
 
@@ -150,3 +147,9 @@ const verifyAddress = (checkAddress, publicKey) => {
     code: 3
   };
 };
+
+
+
+function log(message, ...optionalParams) {
+  DEBUG && console.log(message, optionalParams);
+}
