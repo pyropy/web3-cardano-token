@@ -40,7 +40,8 @@ export const verify = async (token) => {
   }
 
   await Loader.load();
-  let address;
+  let address, publicKey;
+
   if (key) {
     const message = Loader.Message.COSESign1.from_bytes(
       Buffer.from(Buffer.from(signature, "hex"), "hex")
@@ -56,7 +57,7 @@ export const verify = async (token) => {
 
     const coseKey = Loader.Message.COSEKey.from_bytes(Buffer.from(key, "hex"));
 
-    const publicKey = Loader.Cardano.PublicKey.from_bytes(
+    publicKey = Loader.Cardano.PublicKey.from_bytes(
       coseKey
         .header(
           Loader.Message.Label.new_int(
@@ -65,15 +66,6 @@ export const verify = async (token) => {
         )
         .as_bytes()
     );
-
-    log("publicKey", Buffer.from(publicKey.as_bytes()).toString("hex"));
-    const verifyAddressResponse = verifyAddress(address, publicKey);
-
-    if (!verifyAddressResponse.status) {
-      throw new Error(
-        `Address verification failed: (${verifyAddressResponse.message} (${verifyAddressResponse.code}))`
-      );
-    }
 
     const data = message.signed_data().to_bytes();
     const body_from_token = Buffer.from(data).toString("utf-8");
@@ -115,6 +107,14 @@ export const verify = async (token) => {
     // console.log("signature", Buffer.from(x.signature()).toString("hex"));
 
     // listHeaders(x.headers().unprotected().keys(), x.headers().unprotected());
+  }
+  log("publicKey", Buffer.from(publicKey.as_bytes()).toString("hex"));
+  const verifyAddressResponse = verifyAddress(address, publicKey);
+
+  if (!verifyAddressResponse.status) {
+    throw new Error(
+      `Address verification failed: (${verifyAddressResponse.message} (${verifyAddressResponse.code}))`
+    );
   }
   return {
     address: address.to_bech32(),
