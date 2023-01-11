@@ -135,6 +135,23 @@ const verifyAddress = (checkAddress, publicKey) => {
   log("In verifyAddress", checkAddress, publicKey);
   let errorMsg = "";
   try {
+
+    const rewardAddress =
+      Loader.Cardano.RewardAddress.from_address(checkAddress);
+
+    if (rewardAddress) {
+      const status =
+        Buffer.from(
+          rewardAddress.payment_cred().to_keyhash().to_bytes()
+        ).toString("hex") ===
+        Buffer.from(publicKey.hash().to_bytes()).toString("hex");
+      return {
+        status,
+        msg: status ? "Verified Reward Address" : "Reward Address not verified",
+        code: 9,
+      };
+    }
+
     //reconstruct address
     log("Step verifyAddress", 1);
     const paymentKeyHash = publicKey.hash();

@@ -1,12 +1,13 @@
 {
   "name": "web3-cardano-token",
-  "version": "0.1.18",
+  "version": "0.2.00",
   "private": false,
   "description": "Web3 Token is a new way to authenticate users in hybrid dApps using signed messages.",
   "author": "pyropy",
   "scripts": {
     "build": "webpack --mode=production --progress"
   },
+  "type": "module",
   "types": "src/lib.d.ts",
   "module": "src/lib.js",
   "main": "dist/web3-cardano-token.js",
