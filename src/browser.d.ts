@@ -22,3 +22,4 @@ declare const Web3Token: {
 };
 
 export default Web3Token;
+
